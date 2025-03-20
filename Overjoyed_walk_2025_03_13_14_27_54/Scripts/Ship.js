@@ -74,7 +74,12 @@ class Ship extends GameObject {
 
     shoot() {
         let bulletOffset = p5.Vector.fromAngle(radians(this.angle - 90)).mult(25);
-        gameManager.bullets.push(new Bullet(this.x + bulletOffset.x, this.y + bulletOffset.y, this.angle,"player"));
+        let bulletDirection = p5.Vector.fromAngle(radians(this.angle - 90)).mult(5);
+    
+        gameManager.bullets.push(new Bullet(this.x + bulletOffset.x, this.y + bulletOffset.y, this.angle, "player"));
+    
+        let knockbackForce = bulletDirection.mult(-0.05);
+        this.velocity.add(knockbackForce);
     }
 
     draw() {
