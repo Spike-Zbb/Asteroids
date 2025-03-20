@@ -9,6 +9,7 @@ class GameManager {
       this.asteroids = [];
       this.bullets = [];
       this.saucers = [];
+      this.particleSystems = [];
       this.collisionSystem = new CollisionSystem();
       this.spawnInterval = 1000;
       this.lives = 3;
@@ -61,6 +62,10 @@ class GameManager {
       for (let saucer of this.saucers) {
         saucer.update();
       }
+      for (let ps of this.particleSystems) {
+        ps.update();
+      }
+      this.particleSystems = this.particleSystems.filter(ps => !ps.isEmpty());
       this.bullets = this.bullets.filter(bullet => !bullet.isDead());
       this.spawnSaucer();
       this.checkCollisions();
@@ -68,7 +73,7 @@ class GameManager {
       this.displayHUD(); //  Display score and lives on the screen
     }
   
-   handleScreenShake() {
+    handleScreenShake() {
         if (this.shakeDuration > 0) {
             let shakeX = random(-this.shakeIntensity, this.shakeIntensity);
             let shakeY = random(-this.shakeIntensity, this.shakeIntensity);
@@ -106,6 +111,10 @@ class GameManager {
       this.ship.invincibilityTimer = 120;
     }
 
+    triggerExplosion(x, y) {
+      this.particleSystems.push(new ParticleSystem(x, y));
+    }
+
     checkCollisions() {
       let bulletsToRemove = new Set();
       let asteroidsToRemove = new Set();
@@ -120,6 +129,8 @@ class GameManager {
               console.log("Bullet hit asteroid!");
 
               let asteroid = this.asteroids[j];
+
+              this.triggerExplosion(asteroid.x, asteroid.y);
 
               if (asteroid.size === Asteroid.LARGE) {
                 newAsteroids.push(new Asteroid(asteroid.x, asteroid.y, Asteroid.MEDIUM));
@@ -161,6 +172,7 @@ class GameManager {
           let points = this.scoreManager.calculatePoints(asteroid);
           this.scoreManager.addScore(points);
 
+          this.triggerExplosion(this.ship.x, this.ship.y);
           this.loseLife();
           this.triggerScreenShake(10, 20);
         }
@@ -174,7 +186,7 @@ class GameManager {
               console.log("Bullet hit saucer!");
 
               let saucer = this.saucers[j];
-
+              this.triggerExplosion(this.saucers[j].x, this.saucers[j].y);
               bulletsToRemove.add(i);
               saucersToRemove.add(j);
 
@@ -275,7 +287,7 @@ class GameManager {
       textAlign(LEFT, TOP);
       text(`Score: ${this.scoreManager.score}`, 10, 10);
       text(`Lives: ${this.lives}`, width - 100, 10);
-      text(`Level: ${this.levelManager.currentLevel}`, width / 2 - 50, 10); // ✅ **显示关卡**
+      text(`Level: ${this.levelManager.currentLevel}`, width / 2 - 50, 10);
       pop();
     }
 
@@ -298,7 +310,7 @@ class GameManager {
     }
 
     restartGame() {
-      console.log("🔄 Restarting Game...");
+      console.log("Restarting Game...");
   
       this.gameState = "playing";  
       this.gameOver = false;  
