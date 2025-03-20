@@ -15,6 +15,9 @@ class GameManager {
       this.spawnAsteroids(5);
       this.saucerSpawnInterval = 400;
       this.frameCounter = 0;
+      
+      this.shakeDuration = 0; 
+      this.shakeIntensity = 0;
     }
 
     spawnAsteroids(count) {
@@ -31,7 +34,6 @@ class GameManager {
         this.saucers.push(new Saucer());
         this.frameCounter = 0;
       }
-
       this.saucers = this.saucers.filter(saucer => saucer.x > -100 && saucer.x < width + 100);
     }
   
@@ -40,7 +42,9 @@ class GameManager {
         this.displayGameOver();
         return;
       }
-
+      
+      this.handleScreenShake();
+      
       this.ship.update();
       for (let asteroid of this.asteroids) {
         asteroid.update();
@@ -54,11 +58,23 @@ class GameManager {
       this.bullets = this.bullets.filter(bullet => !bullet.isDead());
       this.spawnSaucer();
       this.checkCollisions();
-
-      //  Display score and lives on the screen
-      this.displayHUD(); 
+      this.displayHUD(); //  Display score and lives on the screen
     }
-
+  
+   handleScreenShake() {
+        if (this.shakeDuration > 0) {
+            let shakeX = random(-this.shakeIntensity, this.shakeIntensity);
+            let shakeY = random(-this.shakeIntensity, this.shakeIntensity);
+            translate(shakeX, shakeY);
+            this.shakeDuration--;
+        }
+    }
+  
+    triggerScreenShake(intensity, duration) {
+        this.shakeIntensity = intensity;
+        this.shakeDuration = duration;
+    }
+  
     gainLife() {
       this.lives++;
       console.log("Extra Life! Lives left:", this.lives);
@@ -111,6 +127,8 @@ class GameManager {
 
               let points = this.scoreManager.calculatePoints(asteroid);
               this.scoreManager.addScore(points);
+            
+              this.triggerScreenShake(5, 10);
             }
           }
         }
@@ -137,6 +155,7 @@ class GameManager {
           this.scoreManager.addScore(points);
 
           this.loseLife();
+          this.triggerScreenShake(10, 20);
         }
       }
 
@@ -179,7 +198,7 @@ class GameManager {
             console.log("Ship hit by saucer bullet!");
             bulletsToRemove.add(i);
             this.loseLife();
-        }
+          }
       }
       
       // Saucer Bullet vs Asteroid
@@ -215,7 +234,6 @@ class GameManager {
           }
         }
       }
-
       this.bullets = this.bullets.filter((_, i) => !bulletsToRemove.has(i));
       this.asteroids = this.asteroids.filter((_, j) => !asteroidsToRemove.has(j));
       this.saucers = this.saucers.filter((_, j) => !saucersToRemove.has(j));
@@ -237,12 +255,10 @@ class GameManager {
       fill(255);
       textSize(20);
       textAlign(LEFT, TOP);
-      //  Score displayed in the top-left corner
-      text(`Score: ${this.scoreManager.score}`, 10, 10);
+      text(`Score: ${this.scoreManager.score}`, 10, 10); //  Score displayed in the top-left corner
 
       textAlign(RIGHT, TOP);
-      //  Lives displayed in the top-right corner
-      text(`Lives: ${this.lives}`, width - 10, 10);
+      text(`Lives: ${this.lives}`, width - 10, 10); //  Lives displayed in the top-right corner
       pop();
     }
 }
