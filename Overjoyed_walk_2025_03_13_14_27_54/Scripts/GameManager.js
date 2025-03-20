@@ -4,6 +4,7 @@ class GameManager {
     constructor() {
       console.log("Creating GameManager instance...");
       this.gameState = "title";
+      this.levelManager = new LevelManager(this); 
       this.ship = new Ship(width / 2, height / 2);
       this.asteroids = [];
       this.bullets = [];
@@ -13,12 +14,12 @@ class GameManager {
       this.lives = 3;
       this.gameOver = false;
       this.scoreManager = new ScoreManager();
-      this.spawnAsteroids(5);
       this.saucerSpawnInterval = 400;
       this.frameCounter = 0;
       
       this.shakeDuration = 0; 
       this.shakeIntensity = 0;
+      this.levelManager.loadLevel();
     }
 
     spawnAsteroids(count) {
@@ -63,6 +64,7 @@ class GameManager {
       this.bullets = this.bullets.filter(bullet => !bullet.isDead());
       this.spawnSaucer();
       this.checkCollisions();
+      this.checkLevelProgression();
       this.displayHUD(); //  Display score and lives on the screen
     }
   
@@ -245,6 +247,13 @@ class GameManager {
       this.asteroids.push(...newAsteroids);
     }
   
+    checkLevelProgression() {
+      if (this.asteroids.length === 0) {
+          console.log(`Level ${this.levelManager.currentLevel} Complete!`);
+          this.levelManager.nextLevel();
+      }
+    }
+
     displayGameOver() {
       push();
       fill(255, 0, 0);
@@ -260,12 +269,11 @@ class GameManager {
       fill(255);
       textSize(20);
       textAlign(LEFT, TOP);
-      text(`Score: ${this.scoreManager.score}`, 10, 10); //  Score displayed in the top-left corner
-
-      textAlign(RIGHT, TOP);
-      text(`Lives: ${this.lives}`, width - 10, 10); //  Lives displayed in the top-right corner
+      text(`Score: ${this.scoreManager.score}`, 10, 10);
+      text(`Lives: ${this.lives}`, width - 100, 10);
+      text(`Level: ${this.levelManager.currentLevel}`, width / 2 - 50, 10); // ✅ **显示关卡**
       pop();
-    }
+  }
 
     displayTitleScreen() {
       push();
