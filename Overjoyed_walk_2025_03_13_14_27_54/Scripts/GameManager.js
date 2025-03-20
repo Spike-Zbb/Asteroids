@@ -260,6 +260,10 @@ class GameManager {
       textSize(50);
       textAlign(CENTER, CENTER);
       text("GAME OVER", width / 2, height / 2);
+      
+      textSize(20);
+      fill(255);
+      text("Click to Restart", width / 2, height / 2 + 40);
       pop();
     }
 
@@ -273,7 +277,7 @@ class GameManager {
       text(`Lives: ${this.lives}`, width - 100, 10);
       text(`Level: ${this.levelManager.currentLevel}`, width / 2 - 50, 10); // ✅ **显示关卡**
       pop();
-  }
+    }
 
     displayTitleScreen() {
       push();
@@ -292,4 +296,20 @@ class GameManager {
       console.log("Game Started!");
       this.gameState = "playing"; 
     }
+
+    restartGame() {
+      console.log("🔄 Restarting Game...");
+  
+      this.gameState = "playing";  
+      this.gameOver = false;  
+  
+      this.lives = 3; 
+      this.scoreManager.resetScore(); 
+      this.asteroids = [];
+      this.bullets = [];
+      this.saucers = [];
+      this.ship = new Ship(width / 2, height / 2);
+      this.levelManager.resetLevel();
+      this.levelManager.loadLevel();
+  }
 }

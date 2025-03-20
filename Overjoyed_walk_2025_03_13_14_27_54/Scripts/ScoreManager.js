@@ -29,4 +29,9 @@ class ScoreManager {
         }
         return 0;
     }
+
+    resetScore() {
+        console.log("Score Reset to 0");
+        this.score = 0;
+    }
 }
