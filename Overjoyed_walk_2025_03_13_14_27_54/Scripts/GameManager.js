@@ -3,6 +3,7 @@ console.log("GameManager.js loaded!");
 class GameManager {
     constructor() {
       console.log("Creating GameManager instance...");
+      this.gameState = "title";
       this.ship = new Ship(width / 2, height / 2);
       this.asteroids = [];
       this.bullets = [];
@@ -38,6 +39,10 @@ class GameManager {
     }
   
     updateGame() {
+      if (this.gameState === "title") {
+        this.displayTitleScreen();
+        return;
+      }
       if (this.gameOver) {
         this.displayGameOver();
         return;
@@ -260,5 +265,23 @@ class GameManager {
       textAlign(RIGHT, TOP);
       text(`Lives: ${this.lives}`, width - 10, 10); //  Lives displayed in the top-right corner
       pop();
+    }
+
+    displayTitleScreen() {
+      push();
+      background(0);
+      fill(255);
+      textAlign(CENTER, CENTER);
+      textSize(50);
+      text("Asteroid Game", width / 2, height / 3);
+
+      textSize(20);
+      text("Click to Start", width / 2, height / 2);
+      pop();
+    }
+
+    startGame() {
+      console.log("Game Started!");
+      this.gameState = "playing"; 
     }
 }

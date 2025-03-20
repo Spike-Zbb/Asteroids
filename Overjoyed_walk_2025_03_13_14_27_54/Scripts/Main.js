@@ -37,8 +37,11 @@ function keyReleased() {
 }
 
 function mousePressed() {
-    gameManager.ship.shoot();
-  
+    if (gameManager.gameState === "title") {
+        gameManager.startGame();
+    } else {
+        gameManager.ship.shoot();
+    }
     // TODO: shoot sound resource
     // soundManager.playSound("shoot");
 }
