@@ -34,4 +34,12 @@ class ScoreManager {
         console.log("Score Reset to 0");
         this.score = 0;
     }
+
+    saveScore(name) {
+        let leaderboard = getItem("leaderboard") || [];
+        leaderboard.push({ name, score: this.score });
+        leaderboard.sort((a, b) => b.score - a.score);
+        leaderboard = leaderboard.slice(0, 5);
+        storeItem("leaderboard", leaderboard);
+    }
 }

@@ -9,7 +9,7 @@ class Saucer extends GameObject {
     let y = random(height * 0.2, height * 0.8); 
     let speed = random(2, 4);
     let velocity = createVector(fromLeft ? speed : -speed, 0); 
-    let size = Math.random() < 0.8 ? Saucer.LARGE : Saucer.SMALL;
+    let size = Math.random() < 0.1 ? Saucer.LARGE : Saucer.SMALL;
     super(x, y, velocity, size);
       
     this.shootTimer = 0;
@@ -57,6 +57,18 @@ class Saucer extends GameObject {
     return 0.1;                    
   }
 
+  getVertices() {
+    let vertices = [];
+    let r = this.size / 2;
+    for (let i = 0; i < 5; i++) {
+        let angle = i * TWO_PI / 5;
+        let vx = this.x + cos(angle) * r;
+        let vy = this.y + sin(angle) * r;
+        vertices.push(createVector(vx, vy));
+    }
+    return vertices;
+  }
+  
   draw() {
     push();
     translate(this.x, this.y);

@@ -17,6 +17,18 @@ class Asteroid extends GameObject {
         this.draw();
     }
 
+    getVertices() {
+        let vertices = [];
+        let r = this.size / 2;
+        for (let i = 0; i < 6; i++) {
+            let angle = i * TWO_PI / 6;
+            let vx = this.x + cos(angle) * r;
+            let vy = this.y + sin(angle) * r;
+            vertices.push(createVector(vx, vy));
+        }
+        return vertices;
+    }
+    
     draw() {
         push();
         translate(this.x, this.y);

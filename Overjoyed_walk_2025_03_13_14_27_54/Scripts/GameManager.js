@@ -113,6 +113,7 @@ class GameManager {
 
     triggerExplosion(x, y) {
       this.particleSystems.push(new ParticleSystem(x, y));
+      soundManager.playSound("explore", false, 0.5);
     }
 
     checkCollisions() {
@@ -202,9 +203,6 @@ class GameManager {
         let saucer = this.saucers[j];
 
         if (!this.ship.isInvincible && this.collisionSystem.checkCollision(this.ship, saucer)) {
-          console.log("Ship collided with saucer!");
-          console.log(`Ship size: ${this.ship.size},  Saucer size: ${saucer.size}`);
-
           saucersToRemove.add(j);
           this.loseLife();
         }
@@ -298,9 +296,6 @@ class GameManager {
       textAlign(CENTER, CENTER);
       textSize(50);
       text("Asteroid Game", width / 2, height / 3);
-
-      textSize(20);
-      text("Click to Start", width / 2, height / 2);
       pop();
     }
 
@@ -312,7 +307,7 @@ class GameManager {
     restartGame() {
       console.log("Restarting Game...");
   
-      this.gameState = "playing";  
+      this.gameState = "title";  
       this.gameOver = false;  
   
       this.lives = 3; 

@@ -80,6 +80,21 @@ class Ship extends GameObject {
     
         let knockbackForce = bulletDirection.mult(-0.05);
         this.velocity.add(knockbackForce);
+        
+        soundManager.playSound("hit", false, 0.5);
+    }
+
+    getVertices() {
+        let vertices = [];
+        let r = this.size / 2;
+        let angleOffset = radians(this.angle - 90);
+        for (let i = 0; i < 3; i++) {
+            let angle = angleOffset + i * TWO_PI / 3;
+            let vx = this.x + cos(angle) * r;
+            let vy = this.y + sin(angle) * r;
+            vertices.push(createVector(vx, vy));
+        }
+        return vertices;
     }
 
     draw() {

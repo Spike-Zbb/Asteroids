@@ -8,6 +8,12 @@ class SoundManager {
             console.log("Background music loaded!");
             this.playSound("bgMusic", true, 0.5);
         });
+        this.sounds["explore"] = loadSound("Music/explore.mp3", () => {
+            this.playSound("explore", false, 0.5);
+        });
+        this.sounds["hit"] = loadSound("Music/hit.mp3", () => {
+            this.playSound("hit", false, 0.5);
+        });
     }
 
     playSound(soundName, loop = false, volume = 1.0) {
